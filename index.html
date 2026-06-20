@@ -665,6 +665,9 @@
 </style>
 </head>
 <body>
+    <audio id="introSong">
+    <source src="https://res.cloudinary.com/djb46dfzg/video/upload/v1780031214/The_metro_proposal_MP3_160K_fiyaky.mp3" type="audio/mpeg">
+</audio>
 <!-- Progress bar -->
 <div class="progress-bar" id="progressBar"></div>
 
@@ -1198,6 +1201,39 @@ function updateButtons(){
         right.style.display="block";
     }
 }
+const logoBtn = document.querySelector(".phone-logo-ring");
+const introSong = document.getElementById("introSong");
+
+let isPlaying = false;
+let stopTimer;
+
+logoBtn.style.cursor = "pointer";
+
+logoBtn.addEventListener("click", () => {
+
+    if (!isPlaying) {
+
+        introSong.currentTime = 0;
+        introSong.play();
+
+        isPlaying = true;
+
+        stopTimer = setTimeout(() => {
+            introSong.pause();
+            introSong.currentTime = 0;
+            isPlaying = false;
+        }, 10000);
+
+    } else {
+
+        clearTimeout(stopTimer);
+
+        introSong.pause();
+        introSong.currentTime = 0;
+
+        isPlaying = false;
+    }
+});
 </script>
 <!-- Full Screen Gallery -->
 <div id="galleryModal" class="gallery-modal">
