@@ -665,14 +665,6 @@
 </style>
 </head>
 <body>
-    <audio id="introSong" preload="auto">
-    <source src="https://res.cloudinary.com/djb46dfzg/video/upload/v1780031214/The_metro_proposal_MP3_160K_fiyaky.mp3" type="audio/mpeg">
-</audio>
-
-<div id="touchLayer"
-     style="position:fixed;inset:0;z-index:9999;background:transparent;">
-</div>
-
 <!-- Progress bar -->
 <div class="progress-bar" id="progressBar"></div>
 
@@ -1206,41 +1198,6 @@ function updateButtons(){
         right.style.display="block";
     }
 }
-const touchLayer = document.getElementById("touchLayer");
-const introSong = document.getElementById("introSong");
-
-let introPlayed = false;
-
-function handleIntroMusic() {
-
-    // Already played or stopped
-    if (introPlayed) return;
-
-    if (introSong.paused) {
-
-        introSong.volume = 0.9;
-        introSong.play().catch(() => {});
-
-        // Auto stop after 10 seconds
-        setTimeout(() => {
-            if (!introSong.paused) {
-                introSong.pause();
-                introSong.currentTime = 0;
-            }
-            introPlayed = true;
-        }, 10000);
-
-    } else {
-
-        // User tapped again → stop immediately
-        introSong.pause();
-        introSong.currentTime = 0;
-        introPlayed = true;
-    }
-}
-
-document.addEventListener("click", handleIntroMusic);
-document.addEventListener("touchstart", handleIntroMusic);
 </script>
 <!-- Full Screen Gallery -->
 <div id="galleryModal" class="gallery-modal">
