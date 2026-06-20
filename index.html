@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Song – Feel Every Beat. Live Every Emotion.</title>
+<style>
+  /* ── TOKENS ── */
+  :root {
+    --green: #1DB954;
+    --green-light: #4DCF7A;
+    --green-pale: #E8F8EE;
+    --pink: #FFB6C1;
+    --pink-deep: #FF7F9A;
+    --pink-pale: #FFF0F3;
+    --white: #FFFFFF;
+    --off-white: #FAFCFB;
+    --text-dark: #0F1A14;
+    --text-mid: #3A5444;
+    --text-muted: #7A9B87;
+    --glass-bg: rgba(255,255,255,0.55);
+    --glass-border: rgba(255,255,255,0.75);
+    --shadow-sm: 0 4px 20px rgba(29,185,84,0.08);
+    --shadow-md: 0 8px 40px rgba(29,185,84,0.13);
+    --shadow-lg: 0 20px 60px rgba(29,185,84,0.18);
+    --radius-sm: 14px;
+    --radius-md: 22px;
+    --radius-lg: 32px;
+    --radius-pill: 9999px;
+    --font-display: 'Georgia', serif;
+    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --transition: 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* ── RESET & BASE ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    background: var(--off-white);
+    color: var(--text-dark);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+  img { display: block; max-width: 100%; }
+  a { text-decoration: none; }
+
+  /* ── GLOBAL BACKGROUND ── */
+  .bg-canvas {
+    position: fixed; inset: 0; z-index: -1;
+    background: linear-gradient(135deg, #f0fdf4 0%, #fff0f3 50%, #e8f8ee 100%);
+  }
+
+  /* ── FLOATING BLOBS ── */
+  .blobs { position: fixed; inset: 0; pointer-events: none; z-index: -1; overflow: hidden; }
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.35;
+    animation: drift 18s ease-in-out infinite;
+  }
+  .blob-1 { width: 520px; height: 520px; background: radial-gradient(circle, var(--green-light), transparent 70%); top: -120px; left: -120px; animation-duration: 20s; }
+  .blob-2 { width: 480px; height: 480px; background: radial-gradient(circle, var(--pink), transparent 70%); top: 30%; right: -100px; animation-duration: 15s; animation-delay: -5s; }
+  .blob-3 { width: 400px; height: 400px; background: radial-gradient(circle, #b2f5d0, transparent 70%); bottom: 10%; left: 20%; animation-duration: 22s; animation-delay: -10s; }
+  @keyframes drift {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(30px,-20px) scale(1.05); }
+    66% { transform: translate(-20px,30px) scale(0.95); }
+  }
+
+  /* ── GLASS CARD ── */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(1.6);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    border: 1.5px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ── SECTION WRAPPER ── */
+  section { padding: 80px 20px; position: relative; }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* ── SECTION LABELS ── */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 16px;
+  }
+  .eyebrow-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-dark);
+    margin-bottom: 16px;
+  }
+  .section-sub {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 520px;
+    line-height: 1.7;
+  }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s var(--transition), transform 0.7s var(--transition);
+  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+  .fade-up.delay-1 { transition-delay: 0.1s; }
+  .fade-up.delay-2 { transition-delay: 0.2s; }
+  .fade-up.delay-3 { transition-delay: 0.3s; }
+  .fade-up.delay-4 { transition-delay: 0.4s; }
+  .fade-up.delay-5 { transition-delay: 0.5s; }
+
+  /* ══════════════════════════════════════
+     NAV
+  ══════════════════════════════════════ */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 20px;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  nav.scrolled {
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+  }
+  .nav-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; }
+  .nav-logo-mark {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--green), var(--green-light));
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(29,185,84,0.3);
+  }
+  .nav-logo-mark svg { width: 20px; height: 20px; }
+  .nav-brand { font-weight: 700; font-size: 17px; color: var(--text-dark); letter-spacing: -0.01em; }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: var(--text-mid); transition: color var(--transition); }
+  .nav-links a:hover { color: var(--green); }
+  .nav-cta {
+    padding: 8px 20px; border-radius: var(--radius-pill);
+    background: linear-gradient(135deg, var(--green), var(--green-light));
+    color: white; font-size: 13px; font-weight: 600;
+    box-shadow: 0 4px 14px rgba(29,185,84,0.3);
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+  .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(29,185,84,0.4); }
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+  }
+
+  /* ══════════════════════════════════════
+     HERO
+  ══════════════════════════════════════ */
+  #hero {
+    padding-top: 110px;
+    padding-bottom: 80px;
+    min-height: 100vh;
+    display: flex; align-items: center;
+  }
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: var(--radius-pill);
+    background: linear-gradient(90deg, rgba(29,185,84,0.12), rgba(255,182,193,0.12));
+    border: 1px solid rgba(29,185,84,0.2);
+    font-size: 12px; font-weight: 600; color: var(--green);
+    margin-bottom: 24px;
+  }
+  .badge-pulse {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { box-shadow: 0 0 0 0 rgba(29,185,84,0.5); }
+    50% { box-shadow: 0 0 0 5px rgba(29,185,84,0); }
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 6vw, 60px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .hero-title .accent-green { color: var(--green); }
+  .hero-title .accent-pink { color: var(--pink-deep); }
+  .hero-tagline {
+    font-size: clamp(15px, 2.5vw, 19px);
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 20px;
+    font-family: var(--font-display);
+  }
+  .hero-desc {
+    font-size: 15px;
+    color: var(--text-mid);
+    line-height: 1.75;
+    margin-bottom: 36px;
+    max-width: 440px;
+  }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 28px; border-radius: var(--radius-pill);
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+    color: white; font-size: 15px; font-weight: 600;
+    box-shadow: 0 6px 24px rgba(29,185,84,0.38), 0 0 0 0 rgba(29,185,84,0);
+    transition: transform var(--transition), box-shadow var(--transition);
+    border: none; cursor: pointer;
+    animation: glow-pulse 3s ease-in-out infinite;
+  }
+  @keyframes glow-pulse {
+    0%,100% { box-shadow: 0 6px 24px rgba(29,185,84,0.38), 0 0 0 0 rgba(29,185,84,0.2); }
+    50% { box-shadow: 0 6px 30px rgba(29,185,84,0.5), 0 0 0 8px rgba(29,185,84,0); }
+  }
+  .btn-primary:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 30px rgba(29,185,84,0.45); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 24px; border-radius: var(--radius-pill);
+    background: var(--glass-bg); backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(29,185,84,0.25);
+    color: var(--text-mid); font-size: 15px; font-weight: 600;
+    transition: transform var(--transition), border-color var(--transition);
+    cursor: pointer;
+  }
+  .btn-secondary:hover { transform: translateY(-2px); border-color: var(--green); color: var(--green); }
+
+  /* Hero visual (right side) */
+  .hero-visual { display: flex; justify-content: center; align-items: center; position: relative; }
+  .hero-phone-wrap {
+    position: relative;
+    width: 240px;
+    height: 480px;
+    filter: drop-shadow(0 30px 60px rgba(29,185,84,0.25)) drop-shadow(0 0 40px rgba(255,182,193,0.2));
+  }
+  .phone-frame {
+    width: 240px; height: 480px;
+    border-radius: 40px;
+    background: linear-gradient(145deg, #ffffff, #f0fdf4);
+    border: 2px solid rgba(255,255,255,0.9);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
+    overflow: hidden;
+    position: relative;
+  }
+  .phone-screen {
+    position: absolute; inset: 10px;
+    border-radius: 32px;
+    background: linear-gradient(160deg, #0f1a14 0%, #1a2e21 50%, #1a1020 100%);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 10px;
+  }
+  .phone-logo-ring {
+    width: 64px; height: 64px; border-radius: 20px;
+    background: linear-gradient(135deg, var(--green), var(--green-light));
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 30px rgba(29,185,84,0.5);
+    animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .phone-app-name { color: white; font-weight: 700; font-size: 15px; letter-spacing: 0.05em; }
+  .phone-mini-bars { display: flex; gap: 4px; align-items: flex-end; margin-top: 6px; }
+  .bar {
+    width: 5px; border-radius: 3px;
+    background: var(--green);
+    opacity: 0.7;
+    animation: bar-bounce 1.2s ease-in-out infinite;
+  }
+  .bar:nth-child(1) { height: 12px; animation-delay: 0s; }
+  .bar:nth-child(2) { height: 20px; animation-delay: 0.1s; }
+  .bar:nth-child(3) { height: 16px; animation-delay: 0.2s; }
+  .bar:nth-child(4) { height: 24px; animation-delay: 0.3s; }
+  .bar:nth-child(5) { height: 14px; animation-delay: 0.4s; }
+  .bar:nth-child(6) { height: 18px; animation-delay: 0.5s; }
+  @keyframes bar-bounce {
+    0%,100% { transform: scaleY(1); opacity: 0.7; }
+    50% { transform: scaleY(0.5); opacity: 0.4; }
+  }
+  .phone-pill {
+    margin-top: 8px; padding: 5px 14px; border-radius: var(--radius-pill);
+    background: rgba(29,185,84,0.2); border: 1px solid rgba(29,185,84,0.3);
+    color: var(--green-light); font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+  }
+
+  /* Floating chips around phone */
+  .float-chip {
+    position: absolute;
+    padding: 8px 14px; border-radius: var(--radius-pill);
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600;
+    animation: chip-float 5s ease-in-out infinite;
+  }
+  .float-chip.chip-a {
+    top: 40px; right: -40px;
+    background: rgba(255,255,255,0.85); border: 1px solid rgba(29,185,84,0.2);
+    color: var(--text-mid); box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    animation-delay: 0s;
+  }
+  .float-chip.chip-b {
+    bottom: 80px; left: -50px;
+    background: rgba(255,182,193,0.25); border: 1px solid rgba(255,127,154,0.25);
+    color: var(--pink-deep); box-shadow: 0 6px 20px rgba(255,127,154,0.15);
+    animation-delay: -2s;
+  }
+  .float-chip.chip-c {
+    bottom: 150px; right: -45px;
+    background: rgba(29,185,84,0.1); border: 1px solid rgba(29,185,84,0.2);
+    color: var(--green); box-shadow: 0 6px 20px rgba(29,185,84,0.1);
+    animation-delay: -4s;
+  }
+  @keyframes chip-float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* Stats row */
+  .hero-stats { display: flex; gap: 32px; margin-top: 36px; flex-wrap: wrap; }
+  .stat-item { display: flex; flex-direction: column; gap: 2px; }
+  .stat-number { font-size: 22px; font-weight: 700; color: var(--text-dark); font-family: var(--font-display); }
+  .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+
+  @media (max-width: 768px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+    .hero-visual { order: -1; }
+    .hero-phone-wrap { width: 200px; height: 400px; }
+    .phone-frame { width: 200px; height: 400px; border-radius: 34px; }
+    .phone-screen { border-radius: 26px; }
+    .float-chip.chip-a { right: -20px; }
+    .float-chip.chip-b { left: -20px; }
+    .float-chip.chip-c { right: -20px; }
+    .hero-desc { max-width: 100%; }
+  }
+
+  /* ══════════════════════════════════════
+     ABOUT
+  ══════════════════════════════════════ */
+  #about { background: transparent; }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+  .about-visual { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .category-card {
+    padding: 20px 16px; border-radius: var(--radius-sm);
+    text-align: center; cursor: default;
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+  .category-card:hover { transform: translateY(-4px) scale(1.02); box-shadow: var(--shadow-lg); }
+  .cat-icon { font-size: 32px; margin-bottom: 8px; display:flex; align-items:center; justify-content:center; }
+  .cat-label { font-size: 13px; font-weight: 700; color: var(--text-dark); }
+  .cat-desc { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .cat-love { background: linear-gradient(135deg, rgba(255,127,154,0.1), rgba(255,182,193,0.15)); border: 1px solid rgba(255,127,154,0.2); }
+  .cat-sad { background: linear-gradient(135deg, rgba(100,149,237,0.08), rgba(135,206,250,0.12)); border: 1px solid rgba(100,149,237,0.2); }
+  .cat-motivation { background: linear-gradient(135deg, rgba(255,165,0,0.08), rgba(255,215,0,0.12)); border: 1px solid rgba(255,165,0,0.2); }
+  .cat-emotion { background: linear-gradient(135deg, rgba(29,185,84,0.08), rgba(77,207,122,0.12)); border: 1px solid rgba(29,185,84,0.2); }
+  .about-features { display: flex; flex-direction: column; gap: 14px; margin-top: 28px; }
+  .about-feature { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--text-mid); }
+  .feature-check {
+    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--green), var(--green-light));
+    display: flex; align-items: center; justify-content: center;
+  }
+  @media (max-width: 768px) {
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+
+  /* ══════════════════════════════════════
+     DOWNLOAD
+  ══════════════════════════════════════ */
+  #download { }
+  .download-card {
+    padding: 48px 40px;
+    max-width: 600px; margin: 0 auto;
+    text-align: center;
+  }
+  .download-icon-wrap {
+    width: 80px; height: 80px; border-radius: 24px; margin: 0 auto 24px;
+    background: linear-gradient(135deg, var(--green), var(--green-light));
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 10px 30px rgba(29,185,84,0.35), 0 0 0 12px rgba(29,185,84,0.08);
+    animation: float 4s ease-in-out infinite;
+  }
+  .version-select-wrap { position: relative; margin: 28px 0 20px; }
+  .version-select {
+    width: 100%; padding: 14px 20px; border-radius: var(--radius-sm);
+    border: 1.5px solid rgba(29,185,84,0.25);
+    background: rgba(255,255,255,0.7);
+    font-size: 15px; font-weight: 500; color: var(--text-dark);
+    appearance: none; -webkit-appearance: none;
+    cursor: pointer; outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    backdrop-filter: blur(12px);
+  }
+  .version-select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(29,185,84,0.12); }
+  .select-arrow {
+    position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+    pointer-events: none; color: var(--green);
+  }
+  .version-info {
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+    margin: 20px 0;
+    padding: 16px 20px; border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, rgba(29,185,84,0.06), rgba(255,182,193,0.06));
+    border: 1px solid rgba(29,185,84,0.15);
+  }
+  .vinfo-item { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; min-width: 80px; }
+  .vinfo-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: var(--text-muted); text-transform: uppercase; }
+  .vinfo-value { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+  .btn-download {
+    display: inline-flex; align-items: center; gap: 10px;
+    width: 100%; justify-content: center;
+    padding: 18px 32px; border-radius: var(--radius-md);
+    font-size: 16px; font-weight: 700; letter-spacing: 0.01em;
+    border: none; cursor: pointer;
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+    color: white;
+    box-shadow: 0 8px 30px rgba(29,185,84,0.4);
+    transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+    position: relative; overflow: hidden;
+  }
+  .btn-download::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    opacity: 0; transition: opacity var(--transition);
+  }
+  .btn-download:hover::after { opacity: 1; }
+  .btn-download:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(29,185,84,0.5); }
+  .btn-download:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-download.downloading { animation: btn-pulse 0.6s ease-in-out infinite alternate; }
+  @keyframes btn-pulse {
+    from { box-shadow: 0 8px 30px rgba(29,185,84,0.4); }
+    to { box-shadow: 0 12px 40px rgba(29,185,84,0.6); }
+  }
+  .download-note { font-size: 12px; color: var(--text-muted); margin-top: 14px; }
+
+  /* ══════════════════════════════════════
+     HOW TO USE
+  ══════════════════════════════════════ */
+  #features { }
+  .features-header { text-align: center; margin-bottom: 52px; }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 22px;
+  }
+  .feature-card {
+    padding: 0; overflow: hidden;
+    border-radius: var(--radius-md);
+    transition: transform var(--transition), box-shadow var(--transition);
+    cursor: default;
+  }
+  .feature-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+  .feature-img {
+    width: 100%; height: 180px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .fi-1 { background: linear-gradient(135deg, #0f1a14, #1a3622); }
+  .fi-2 { background: linear-gradient(135deg, #1a0f1a, #2e1a2e); }
+  .fi-3 { background: linear-gradient(135deg, #0a1a10, #1a3010); }
+  .fi-4 { background: linear-gradient(135deg, #1a0a12, #2e1520); }
+  .fi-5 { background: linear-gradient(135deg, #0a1020, #101a30); }
+  .feature-img-icon { display:flex; align-items:center; justify-content:center; position:relative; z-index:1; animation: float 5s ease-in-out infinite; }
+  .feature-img-glow {
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at center, rgba(29,185,84,0.2) 0%, transparent 70%);
+  }
+  .feature-body { padding: 20px; }
+  .feature-tag {
+    display: inline-block;
+    padding: 3px 10px; border-radius: var(--radius-pill);
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 8px;
+    background: linear-gradient(90deg, rgba(29,185,84,0.12), rgba(255,182,193,0.12));
+    border: 1px solid rgba(29,185,84,0.2);
+    color: var(--green);
+  }
+  .feature-title { font-size: 16px; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; }
+  .feature-desc { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+
+  /* ══════════════════════════════════════
+     DEVELOPER
+  ══════════════════════════════════════ */
+  #developer { }
+  .dev-card { max-width: 500px; margin: 0 auto; padding: 48px 40px; text-align: center; }
+  .dev-avatar {
+    width: 90px; height: 90px; border-radius: 50%; margin: 0 auto 20px;
+    background: linear-gradient(135deg, var(--green), var(--pink-deep));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; font-weight: 700; color: white;
+    box-shadow: 0 10px 30px rgba(29,185,84,0.3), 0 0 0 4px rgba(255,255,255,0.6);
+    font-family: var(--font-display);
+  }
+  .dev-name { font-size: 26px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; font-family: var(--font-display); }
+  .dev-role { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; font-weight: 500; }
+  .dev-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .dev-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px; border-radius: var(--radius-pill);
+    font-size: 13px; font-weight: 600;
+    transition: transform var(--transition), box-shadow var(--transition);
+    text-decoration: none;
+  }
+  .dev-link:hover { transform: translateY(-2px); }
+  .dev-link-gh {
+    background: rgba(36,41,46,0.08); border: 1.5px solid rgba(36,41,46,0.15);
+    color: #24292e;
+  }
+  .dev-link-gh:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+  .dev-link-mail {
+    background: rgba(29,185,84,0.08); border: 1.5px solid rgba(29,185,84,0.2);
+    color: var(--green);
+  }
+  .dev-link-mail:hover { box-shadow: 0 4px 16px rgba(29,185,84,0.2); }
+
+  /* ══════════════════════════════════════
+     FOOTER
+  ══════════════════════════════════════ */
+  footer {
+    padding: 32px 20px;
+    text-align: center;
+    border-top: 1px solid rgba(29,185,84,0.1);
+    background: rgba(255,255,255,0.4);
+    backdrop-filter: blur(12px);
+  }
+  .footer-logo { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; }
+  .footer-brand { font-weight: 700; font-size: 16px; color: var(--text-dark); }
+  .footer-copy { font-size: 13px; color: var(--text-muted); }
+  .footer-divider {
+    display: inline-block;
+    width: 40px; height: 2px; border-radius: 2px;
+    background: linear-gradient(90deg, var(--green), var(--pink));
+    margin: 14px auto 14px; vertical-align: middle;
+  }
+  .footer-tagline { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 6px; }
+
+  /* ══════════════════════════════════════
+     SCROLL TOP
+  ══════════════════════════════════════ */
+  .scroll-top {
+    position: fixed; bottom: 28px; right: 24px;
+    width: 42px; height: 42px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--green), var(--green-light));
+    display: flex; align-items: center; justify-content: center;
+    color: white; cursor: pointer; border: none;
+    box-shadow: 0 4px 16px rgba(29,185,84,0.35);
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 99;
+  }
+  .scroll-top.visible { opacity: 1; transform: translateY(0); }
+  .scroll-top:hover { box-shadow: 0 6px 22px rgba(29,185,84,0.5); transform: translateY(-2px); }
+
+  /* ══════════════════════════════════════
+     PROGRESS BAR
+  ══════════════════════════════════════ */
+  .progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--green), var(--pink));
+    z-index: 200; transition: width 0.1s;
+    border-radius: 0 2px 2px 0;
+  }
+
+  /* ══════════════════════════════════════
+     MISC UTILITIES
+  ══════════════════════════════════════ */
+  .text-center { text-align: center; }
+  .mt-auto { margin-top: auto; }
+  ::selection { background: rgba(29,185,84,0.2); color: var(--text-dark); }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--off-white); }
+  ::-webkit-scrollbar-thumb { background: rgba(29,185,84,0.35); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(29,185,84,0.55); }
+  .nav-logo-mark img,
+.phone-logo-ring img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(29,185,84,0.4);
+}
+.download-icon-img{
+    width: 80px; height: 80px; border-radius: 24px; 
+}
+.dev-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:50%;
+}
+.gallery-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.95);
+    z-index:9999;
+    justify-content:center;
+    align-items:center;
+}
+
+.gallery-image{
+    max-width:90%;
+    max-height:90%;
+    border-radius:12px;
+}
+
+.close-gallery{
+    position:absolute;
+    top:20px;
+    right:30px;
+    font-size:40px;
+    color:white;
+    cursor:pointer;
+}
+
+.gallery-btn{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(255,255,255,0.15);
+    border:none;
+    color:white;
+    font-size:35px;
+    padding:10px 18px;
+    cursor:pointer;
+    border-radius:50%;
+}
+
+.left{
+    left:20px;
+}
+
+.right{
+    right:20px;
+}
+</style>
+</head>
+<body>
+    <audio id="introSong" preload="auto">
+    <source src="https://res.cloudinary.com/djb46dfzg/video/upload/v1780031214/The_metro_proposal_MP3_160K_fiyaky.mp3" type="audio/mpeg">
+</audio>
+
+<div id="touchLayer"
+     style="position:fixed;inset:0;z-index:9999;background:transparent;">
+</div>
+
+<!-- Progress bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Background -->
+<div class="bg-canvas"></div>
+<div class="blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="nav-logo-mark">
+        <img src="logo1.png" alt="">
+      </div>
+      <span class="nav-brand">My Song</span>
+    </div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#download">Download</a>
+      <a href="#features">Features</a>
+      <a href="#developer">Developer</a>
+    </div>
+    <a href="#download" class="nav-cta">Get App ↓</a>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-inner">
+
+      <!-- Left: Text -->
+      <div class="fade-up">
+        <h1 class="hero-title">
+          <span class="accent-green">My</span> <span class="accent-pink">Song</span>
+        </h1>
+        <p class="hero-tagline">"Feel Every Beat. Live Every Emotion."</p>
+        <p class="hero-desc">
+          A beautifully crafted music streaming app designed for those who feel music deeply.
+          Explore curated collections across Love, Sad, Motivation, and Emotion — all at your fingertips.
+        </p>
+        <div class="hero-actions">
+          <a href="#download" class="btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 15L7 10M12 15L17 10M12 15V3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 18H21" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+            Download APK
+          </a>
+          <a href="#features" class="btn-secondary">
+            App Features →
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: Phone Mockup -->
+      <div class="hero-visual fade-up delay-2">
+        <div class="hero-phone-wrap">
+          <div class="phone-frame">
+            <div class="phone-screen">
+              <div class="phone-logo-ring">
+                <img src="logo1.png" alt="">
+              </div>
+              <span class="phone-app-name">MY SONG</span>
+              <div class="phone-mini-bars">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+              </div>
+              <div class="phone-pill">NOW PLAYING</div>
+            </div>
+          </div>
+          <!-- Floating chips -->
+          <div class="float-chip chip-a">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M9 18c0 1.66-1.34 3-3 3s-3-1.34-3-3 1.34-3 3-3c.35 0 .68.06 1 .17V7l12-3v4L9 11v7z" fill="currentColor"/></svg>
+            Love Songs
+          </div>
+          <div class="float-chip chip-b">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5 2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.55 11.53L12 21.35z"/></svg>
+            Favorites
+          </div>
+          <div class="float-chip chip-c">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 2c0 0-9.5 5.5-9.5 13a9 9 0 0 0 18 0c0-4.5-2.5-7.5-2.5-7.5-1 2.5-3 3.5-3 3.5-.5-2-.5-6 -3-9z"/></svg>
+            Trending
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ABOUT ═══════════ -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+
+      <!-- Categories visual -->
+      <div class="about-visual fade-up">
+        <div class="category-card cat-love glass fade-up delay-1">
+          <div class="cat-icon"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5 2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.55 11.53L12 21.35z" fill="#FF7F9A"/></svg></div>
+          <div class="cat-label">Love</div>
+          <div class="cat-desc">Romantic Tamil classics</div>
+        </div>
+        <div class="category-card cat-sad glass fade-up delay-2">
+          <div class="cat-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M20 17.58A5 5 0 0018 8h-1.26A8 8 0 104 15.25" stroke="#6495ED" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="8" y1="19" x2="8" y2="21" stroke="#6495ED" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="13" x2="8" y2="15" stroke="#6495ED" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="15" x2="12" y2="17" stroke="#6495ED" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="23" stroke="#6495ED" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="19" x2="16" y2="21" stroke="#6495ED" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="13" x2="16" y2="15" stroke="#6495ED" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="cat-label">Sad</div>
+          <div class="cat-desc">Emotional soul tracks</div>
+        </div>
+        <div class="category-card cat-motivation glass fade-up delay-3">
+          <div class="cat-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#FFA500" stroke="#FFA500" stroke-width="1" stroke-linejoin="round"/></svg></div>
+          <div class="cat-label">Motivation</div>
+          <div class="cat-desc">Power-up anthems</div>
+        </div>
+        <div class="category-card cat-emotion glass fade-up delay-4">
+          <div class="cat-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#1DB954" stroke-width="1.8"/><path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="#1DB954" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="10" r="1.2" fill="#1DB954"/><circle cx="15" cy="10" r="1.2" fill="#1DB954"/><path d="M9 7c.5-1 1.5-1.5 3-1.5S14.5 6 15 7" stroke="#1DB954" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div class="cat-label">Emotion</div>
+          <div class="cat-desc">Deep feeling melodies</div>
+        </div>
+      </div>
+
+      <!-- Text -->
+      <div class="fade-up delay-1">
+        <div class="eyebrow"><span class="eyebrow-dot"></span>About My Song</div>
+        <h2 class="section-title">Music that<br>moves your soul.</h2>
+        <p class="section-sub">
+  My Song is a modern music streaming application crafted for people who live through music.
+  Every song is carefully curated and organised into categories that match your mood and emotions.
+</p>
+        <div class="about-features">
+          <div class="about-feature">
+  <div class="feature-check">✓</div>
+  Stream seamlessly with smooth, buffer-free playback
+</div>
+
+<div class="about-feature">
+  <div class="feature-check">✓</div>
+  Explore songs across multiple moods and categories
+</div>
+
+<div class="about-feature">
+  <div class="feature-check">✓</div>
+  Save favourites for instant access anytime
+</div>
+
+<div class="about-feature">
+  <div class="feature-check">✓</div>
+  Lightning-fast built-in search to find any song instantly
+</div>
+
+<div class="about-feature">
+  <div class="feature-check">✓</div>
+  Clean, modern, and user-friendly interface
+</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ DOWNLOAD ═══════════ -->
+<section id="download">
+  <div class="container">
+    <div class="features-header fade-up">
+      <div class="eyebrow" style="justify-content:center"><span class="eyebrow-dot"></span>Get The App</div>
+      <h2 class="section-title text-center">Download My Song</h2>
+      <p class="section-sub" style="margin:0 auto;text-align:center">Select a version and install My Song on your Android device in seconds.</p>
+    </div>
+
+    <div class="download-card glass fade-up delay-1">
+      <div class="download-icon-wrap">
+        <img class="download-icon-img" src="logo1.png" alt="">
+      </div>
+
+      <h3 style="font-size:22px;font-weight:700;color:var(--text-dark);margin-bottom:8px;font-family:var(--font-display)">My Song APK</h3>
+      <p style="font-size:14px;color:var(--text-muted)">Choose a version to download</p>
+
+      <div class="version-select-wrap">
+        <select class="version-select" id="versionSelect" onchange="onVersionChange()">
+          <option value="">— Select Version —</option>
+          <option value="0.01">My song-v0.01</option>
+        </select>
+        <div class="select-arrow">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+
+      <div class="version-info" id="versionInfo" style="display:none">
+        <div class="vinfo-item"><span class="vinfo-label">Version</span><span class="vinfo-value" id="vi-ver">—</span></div>
+        <div class="vinfo-item"><span class="vinfo-label">Size</span><span class="vinfo-value" id="vi-size">—</span></div>
+        <div class="vinfo-item"><span class="vinfo-label">Platform</span><span class="vinfo-value" id="vi-plat">—</span></div>
+        <div class="vinfo-item"><span class="vinfo-label">Released</span><span class="vinfo-value" id="vi-date">—</span></div>
+      </div>
+
+      <button class="btn-download" id="downloadBtn" disabled onclick="startDownload()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 15L7 10M12 15L17 10M12 15V3" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 18H21" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <span id="downloadBtnText">Select a version first</span>
+      </button>
+
+      <p class="download-note">Download My Song app, enjoy your song.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════ HOW TO USE ═══════════ -->
+<section id="features">
+  <div class="container">
+    <div class="features-header fade-up">
+      <div class="eyebrow" style="justify-content:center"><span class="eyebrow-dot"></span>App Features</div>
+      <h2 class="section-title text-center">Everything inside<br>My Song.</h2>
+      <p class="section-sub" style="margin:0 auto;text-align:center">
+Packed with powerful features crafted to give you the best music experience on your phone.
+</p>
+    </div>
+    
+
+    <div class="features-grid">
+
+      <!-- Feature 1 -->
+      <div class="feature-card glass fade-up delay-1">
+<div class="feature-img fi-3"
+onclick="openGallery(['feature1.jpeg'])">
+
+    <img src="feature1.jpeg"
+         alt=""
+         style="width:100%;height:100%;object-fit:cover;">
+</div>
+        <div class="feature-body">
+          <div class="feature-tag">Playback Control</div>
+          <div class="feature-title">Play Next</div>
+          <div class="feature-desc">
+Choose any song to play immediately after the current track without interrupting your listening experience.
+</div>
+        </div>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="feature-card glass fade-up delay-2">
+<div class="feature-img fi-3"
+onclick="openGallery(['feature2.jpeg'])">
+    <img src="feature2.jpeg"
+         alt=""
+         style="width:100%;height:100%;object-fit:cover;">
+</div>
+        <div class="feature-body">
+          <div class="feature-tag">Queue</div>
+          <div class="feature-title">Add to Queue</div>
+          <div class="feature-desc">
+Add multiple songs to your queue and enjoy continuous playback in your preferred order.
+</div>
+        </div>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="feature-card glass fade-up delay-3">
+<div class="feature-img fi-3"
+onclick="openGallery(['feature3.jpeg'])">
+    <img src="feature3.jpeg"
+         alt=""
+         style="width:100%;height:100%;object-fit:cover;">
+</div>
+        <div class="feature-body">
+          <div class="feature-tag">Favorites</div>
+          <div class="feature-title">Double Tap to Like</div>
+          <div class="feature-desc">
+Double tap any song cover to instantly add it to your Liked Songs collection for quick access anytime.
+</div>
+        </div>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="feature-card glass fade-up delay-4">
+<div class="feature-img fi-2"
+onclick="openGallery(['feature4.0.jpeg','feature4.1.jpeg'])">
+    <img src="feature4.0.jpeg"
+         alt=""
+         style="width:100%;height:100%;object-fit:cover;">
+</div>
+        <div class="feature-body">
+          <div class="feature-tag">Sleep Timer</div>
+          <div class="feature-title">Sleep Timer</div>
+          <div class="feature-desc">
+Set a sleep timer and enjoy your music before bed. Playback will automatically stop when the selected time is reached.
+</div>
+        </div>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="feature-card glass fade-up delay-5">
+<div class="feature-img fi-2"
+onclick="openGallery(['feature5.0.jpeg','feature5.1.jpeg'])">
+<img src="feature5.0.jpeg"
+         alt=""
+         style="width:100%;height:100%;object-fit:cover;">
+</div>
+        <div class="feature-body">
+          <div class="feature-tag">MV Sync</div>
+          <div class="feature-title">My view Sync</div>
+          <div class="feature-desc">
+Listen together in real time. Songs, playback controls, and track changes stay perfectly synced across all connected devices.
+</div>
+        </div>
+      </div>
+    
+      <!-- Feature 6 -->
+<div class="feature-card glass fade-up delay-6">
+
+    <div class="feature-img fi-2"
+    onclick="openGallery(['feature6.jpeg'])">
+
+        <img src="feature6.jpeg"
+             alt="Quick Actions"
+             style="width:100%;height:100%;object-fit:cover;">
+    </div>
+
+    <div class="feature-body">
+        <div class="feature-tag">Shortcut</div>
+
+        <div class="feature-title">Quick Actions</div>
+
+        <div class="feature-desc">
+            Long press any song to open a shortcut menu with instant access to playback, playlist, sharing, and song management options.
+        </div>
+    </div>
+
+</div>
+
+    </div>
+  </div>
+  
+</section>
+
+<!-- ═══════════ DEVELOPER ═══════════ -->
+<section id="developer">
+  <div class="container">
+    <div class="features-header fade-up">
+      <div class="eyebrow" style="justify-content:center"><span class="eyebrow-dot"></span>Developer</div>
+      <h2 class="section-title text-center">Meet the creator</h2>
+    </div>
+
+    <div class="dev-card glass fade-up delay-1">
+      <div class="dev-avatar">
+    <img src="mohanraj.jpeg" alt="Mohanraj">
+</div>
+      <div class="dev-name">Mohanraj</div>
+      <div class="dev-role">Developer · Tamil Nadu, India</div>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.75;margin-bottom:24px;">
+  Passionate about creating modern and user-friendly applications that deliver a smooth and enjoyable experience.
+  My Song is designed for music lovers who want easy access to their favorite songs anytime, anywhere.
+</p>
+      <div class="dev-links">
+        <a href="https://github.com/mohanraj132212-collab" target="_blank" class="dev-link dev-link-gh">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0a12 12 0 00-3.79 23.39c.6.11.82-.26.82-.58v-2.17c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 016.01 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0012 0z"/></svg>
+          GitHub
+        </a>
+        <a href="mailto:mohanraj132212@gmail.com" class="dev-link dev-link-mail">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+          stroke="currentColor" stroke-width="1.8"/>
+    <path d="M22 6l-10 7L2 6"
+          stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round"/>
+  </svg>
+  Email
+</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="footer-logo">
+    <div class="nav-logo-mark" style="width:28px;height:28px;border-radius:8px">
+      <img src="logo1.png" alt="">
+    </div>
+    <span class="footer-brand">My Song</span>
+  </div>
+  <div><span class="footer-divider"></span></div>
+  <p class="footer-copy">My Song was created in 2026.</p>
+  <p class="footer-tagline">"Feel Every Beat. Live Every Emotion."</p>
+</footer>
+
+<!-- Scroll to top -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 10l5-5 5 5" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+</button>
+
+<script>
+  /* ── VERSION DATA ── */
+  const versions = {
+  "0.01": {
+    label: "v0.01",
+    size: "4.26 MB",
+    platform: "Android 7+",
+    date: "Jun 2026",
+    url: "app-debug.apk"
+  }
+};
+
+
+  /* ── VERSION SELECT ── */
+  function onVersionChange() {
+    const sel = document.getElementById("versionSelect");
+    const v = sel.value;
+    const info = document.getElementById("versionInfo");
+    const btn = document.getElementById("downloadBtn");
+    const btnText = document.getElementById("downloadBtnText");
+
+    if (v && versions[v]) {
+      const d = versions[v];
+      document.getElementById("vi-ver").textContent = d.label;
+      document.getElementById("vi-size").textContent = d.size;
+      document.getElementById("vi-plat").textContent = d.platform;
+      document.getElementById("vi-date").textContent = d.date;
+      info.style.display = "flex";
+      btn.disabled = false;
+      btnText.textContent = `Download ${d.label} APK`;
+    } else {
+      info.style.display = "none";
+      btn.disabled = true;
+      btnText.textContent = "Select a version first";
+    }
+  }
+
+  /* ── DOWNLOAD HANDLER ── */
+  function startDownload() {
+    const sel = document.getElementById("versionSelect");
+    const v = sel.value;
+    if (!v || !versions[v]) return;
+
+    const btn = document.getElementById("downloadBtn");
+    const btnText = document.getElementById("downloadBtnText");
+
+    btn.classList.add("downloading");
+    btnText.textContent = "Preparing download…";
+
+    setTimeout(() => {
+  btn.classList.remove("downloading");
+  btnText.textContent = `Download ${versions[v].label} APK`;
+
+  const link = document.createElement("a");
+  link.href = versions[v].url;
+  link.download = "MySong-v0.01.apk";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+}, 1800);
+  }
+
+  /* ── SCROLL ANIMATIONS ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add("visible"); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll(".fade-up").forEach(el => observer.observe(el));
+
+  /* ── NAV SCROLL ── */
+  const navbar = document.getElementById("navbar");
+  const scrollTopBtn = document.getElementById("scrollTop");
+  const progressBar = document.getElementById("progressBar");
+
+  window.addEventListener("scroll", () => {
+    const scrollY = window.scrollY;
+    const maxScroll = document.body.scrollHeight - window.innerHeight;
+    const pct = (scrollY / maxScroll) * 100;
+
+    // Nav
+    navbar.classList.toggle("scrolled", scrollY > 40);
+
+    // Scroll top btn
+    scrollTopBtn.classList.toggle("visible", scrollY > 300);
+
+    // Progress bar
+    progressBar.style.width = pct + "%";
+  });
+  let galleryImages = [];
+let currentIndex = 0;
+
+function openGallery(images){
+    galleryImages = images;
+    currentIndex = 0;
+
+    document.getElementById("galleryModal").style.display="flex";
+    document.getElementById("galleryImage").src =
+    galleryImages[currentIndex];
+
+    updateButtons();
+}
+
+function closeGallery(){
+    document.getElementById("galleryModal").style.display="none";
+}
+
+function changeImage(direction){
+
+    currentIndex += direction;
+
+    if(currentIndex < 0){
+        currentIndex = galleryImages.length - 1;
+    }
+
+    if(currentIndex >= galleryImages.length){
+        currentIndex = 0;
+    }
+
+    document.getElementById("galleryImage").src =
+    galleryImages[currentIndex];
+
+    updateButtons();
+}
+
+function updateButtons(){
+
+    const left = document.querySelector(".left");
+    const right = document.querySelector(".right");
+
+    if(galleryImages.length === 1){
+        left.style.display="none";
+        right.style.display="none";
+    }else{
+        left.style.display="block";
+        right.style.display="block";
+    }
+}
+const touchLayer = document.getElementById("touchLayer");
+const introSong = document.getElementById("introSong");
+
+let introPlayed = false;
+
+function handleIntroMusic() {
+
+    // Already played or stopped
+    if (introPlayed) return;
+
+    if (introSong.paused) {
+
+        introSong.volume = 0.9;
+        introSong.play().catch(() => {});
+
+        // Auto stop after 10 seconds
+        setTimeout(() => {
+            if (!introSong.paused) {
+                introSong.pause();
+                introSong.currentTime = 0;
+            }
+            introPlayed = true;
+        }, 10000);
+
+    } else {
+
+        // User tapped again → stop immediately
+        introSong.pause();
+        introSong.currentTime = 0;
+        introPlayed = true;
+    }
+}
+
+document.addEventListener("click", handleIntroMusic);
+document.addEventListener("touchstart", handleIntroMusic);
+</script>
+<!-- Full Screen Gallery -->
+<div id="galleryModal" class="gallery-modal">
+    <span class="close-gallery" onclick="closeGallery()">×</span>
+
+    <button class="gallery-btn left"
+            onclick="changeImage(-1)">❮</button>
+
+    <img id="galleryImage"
+         class="gallery-image"
+         src="">
+
+    <button class="gallery-btn right"
+            onclick="changeImage(1)">❯</button>
+</div>
+</body>
+</html>
